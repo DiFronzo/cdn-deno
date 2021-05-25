@@ -1,6 +1,17 @@
+/**
+* CDN for Github and Deno.land
+*/
 import { PathParams, serve } from "https://deno.land/x/sift@0.3.1/mod.ts";
 //Inspired by https://github.com/kt3k/proxy-d-ts
 
+/**
+* Sends a response and return response
+*
+* @param request - The request info
+* @param params - The parameters from the url
+*
+* @returns The response of either GitHub or Deno.land
+*/
 const handleCDN = async (
   request: Request,
   params: PathParams,
@@ -55,6 +66,9 @@ serve({
   404: () => notFound(),
 });
 
+/**
+* The error page, with a back to home link
+*/
 function notFound(): Response {
   return new Response(`Not Found!<br /><a href="/">Back to Home</a>`, {
     status: 404,
@@ -62,6 +76,9 @@ function notFound(): Response {
   });
 }
 
+/**
+* The homepage with exaples to check out
+*/
 function home(): Response {
   return new Response(
     `serving cdn.deno.land (/deno) and raw.githubusercontent.com (/github)<br />

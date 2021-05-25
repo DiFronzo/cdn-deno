@@ -25,3 +25,9 @@ jobs:
 
       - name: Lint
         run: deno lint --unstable
+
+      - name: Type Check
+        run: make check
+
+      - name: Test
+        run: deno test --allow-env
