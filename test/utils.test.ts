@@ -4,11 +4,10 @@ import { hasFileExtension } from "../utils.ts";
 Rhum.testPlan("utils.test.ts", () => {
   Rhum.testSuite("hasFileExtension()", () => {
     Rhum.testCase("should validate a filename correctly", () => {
-      Rhum.asserts.assertEquals(hasFileExtension("mod.ts", "ts"), true);
-      Rhum.asserts.assertEquals(hasFileExtension("mod.ts", "js"), false);
-      Rhum.asserts.assertEquals(hasFileExtension("mod", "ts"), false);
+      Rhum.asserts.assertEquals(hasFileExtension("mod.tsx", "tsx"), true);
+      Rhum.asserts.assertEquals(hasFileExtension("mod.tsx", "js"), false);
       Rhum.asserts.assertEquals(hasFileExtension("mod", "tsx"), false);
-      Rhum.asserts.assertEquals(hasFileExtension("mod.ts", "jsx"), false);
+      Rhum.asserts.assertEquals(hasFileExtension("mod", "jsx"), false);
     });
   });
 });
