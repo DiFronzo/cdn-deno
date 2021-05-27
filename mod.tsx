@@ -264,17 +264,17 @@ const CDN = (props: { urlShit: string; urlShitChange: string }) => {
           </form>
           {urlShitChange
             ? (
-              <div class="-m-2 text-center">
-                <div class="p-2">
+              <div className="-m-2 text-center">
+                <div className="p-2">
                   <div
-                    class="inline-flex items-center bg-white leading-none text-black-600 rounded-full p-2 shadow text-teal text-sm"
+                    className="inline-flex items-center bg-white leading-none text-black-600 rounded-full p-2 shadow text-teal text-sm"
                   >
                     <span
-                      class="inline-flex bg-green-500 text-black rounded-full h-6 px-3 justify-center items-center"
+                      className="inline-flex bg-green-500 text-black rounded-full h-6 px-3 justify-center items-center"
                     >
                       Link
                     </span>
-                    <span class="inline-flex px-2">{urlShitChange}</span>
+                    <span className="inline-flex px-2">{urlShitChange}</span>
                   </div>
                 </div>
               </div>
