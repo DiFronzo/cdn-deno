@@ -45,8 +45,9 @@ const handleCDNLink = async (
       const VERSON = /(.+?)(?=\/)(.*)/;
       const m2 = VERSON.exec(rest);
       if (m2) {
-        dtsUrl = `https://cdn.deno.land/${repo}/versions/${m2[1]}/raw/${m2[2] ||
-          "/mod.ts"}`;
+        dtsUrl = `https://cdn.deno.land/${repo}/versions/${m2[1]}/raw/${m2[2]}`;
+      } else {
+        dtsUrl = `https://cdn.deno.land/${repo}/versions/${rest}/raw/mod.ts`;
       }
     } else {
       // https://cdn.deno.land/oak/meta/versions.json
@@ -82,7 +83,7 @@ const handleCDNLink = async (
   return new Response(resp.body, { ...resp, headers });
 };
 
-const Span = (props: { children: string; bg: string; leading?: boolean }) => {
+const Span = (props: { children?: string; bg: string; leading?: boolean }) => {
   const { children, bg, leading } = props;
   return (
     <span
@@ -95,9 +96,17 @@ const Span = (props: { children: string; bg: string; leading?: boolean }) => {
   );
 };
 
-const Layout = (props: { children: VNode }) => {
+const values = {
+  title: "CDN for Deno",
+  description:
+    "An easier way to use code from GitHub and Deno Land in your Deno project.",
+  creator: "DiFronzo",
+};
+
+const Layout = (props: { children?: VNode }) => {
   const { children } = props;
   return (
+    // <!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
@@ -110,7 +119,40 @@ const Layout = (props: { children: VNode }) => {
           href="https://unpkg.com/tailwindcss@1.9.6/dist/tailwind.min.css"
           crossOrigin="anonymous"
         />
-        <title>CDN for Deno</title>
+        <title>{values.title}</title>
+        <link rel="shortcut icon" href="https://deno.land/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="https://deno.land/images/icons/apple-touch-icon-180x180.png"
+        />
+        <link rel="icon" sizes="32x32" href="https://deno.land/favicon.ico" />
+        <meta name="title" content={values.title} key="title" />
+        <meta
+          name="description"
+          content={values.description}
+          key="description"
+        />
+        <meta property="og:url" content="https://cdn.vfiles.no/" key="og-url" />
+        <meta property="og:title" content={values.title} key="og-title" />
+        <meta
+          property="og:description"
+          content={values.description}
+          key="og-description"
+        />
+        <meta property="og:type" content="website" key="og-type" />
+        <meta name="twitter:title" content={values.title} key="twitter-title" />
+        <meta name="twitter:card" content="summary" key="twitter-card" />
+        <meta
+          name="twitter:creator"
+          content={values.creator}
+          key="twitter-creator"
+        />
+        <meta
+          name="twitter:description"
+          content={values.description}
+          key="twitter-description"
+        />
       </head>
       <body>
         {children}
@@ -119,7 +161,14 @@ const Layout = (props: { children: VNode }) => {
   );
 };
 
-const CDN = () => {
+const getQueryStringParam = (url: string, param: string): string => {
+  const searchParams = new URLSearchParams(new URL(url).search.slice(1));
+  const queryParam = searchParams.get(param);
+  return queryParam ? queryParam : "";
+};
+
+const CDN = (props: { urlShit: string; urlShitChange: string }) => {
+  const { urlShit, urlShitChange } = props;
   return (
     <Layout>
       <div>
@@ -128,19 +177,28 @@ const CDN = () => {
             className="container px-2 max-w-2xl mx-auto flex items-center justify-between"
           >
             <h1 className="text-3xl flex items-center">
-              <img
-                className="w-12 h-12"
-                src="https://upload.wikimedia.org/wikipedia/commons/8/84/Deno.svg"
-              />&nbsp; CDN for Deno
+              <a
+                href="/"
+              >
+                <img
+                  className="w-12 h-12"
+                  width="12"
+                  height="12"
+                  src="https://deno.land/logo.svg"
+                  alt="Deno Logo"
+                />
+              </a>&nbsp; CDN for Deno
             </h1>
             <div>
               <a
                 href="https://github.com/DiFronzo/deno-toolforge"
+                aria-label="Github"
                 target="_blank"
                 rel="noopener nofollow"
               >
                 <svg
                   id="i-github"
+                  alt="Github"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 64 64"
                   width="32"
@@ -189,9 +247,42 @@ const CDN = () => {
               </code>
             </pre>
           </div>
+          <form className="flex max-w-sm w-full overflow-hidden mx-auto">
+            <input
+              name="url"
+              type="string"
+              id="UrlCode"
+              value={urlShit}
+              className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white"
+              placeholder="https://github.com/hashrock/deno-opn/opn.ts"
+            />
+            <button
+              className="px-8 rounded-r-lg bg-green-500 text-gray-800 font-bold p-4 uppercase border-green-600 border-t border-b border-r"
+            >
+              Create link
+            </button>
+          </form>
+          {urlShitChange
+            ? (
+              <div class="-m-2 text-center">
+                <div class="p-2">
+                  <div
+                    class="inline-flex items-center bg-white leading-none text-black-600 rounded-full p-2 shadow text-teal text-sm"
+                  >
+                    <span
+                      class="inline-flex bg-green-500 text-black rounded-full h-6 px-3 justify-center items-center"
+                    >
+                      Link
+                    </span>
+                    <span class="inline-flex px-2">{urlShitChange}</span>
+                  </div>
+                </div>
+              </div>
+            )
+            : ""}
         </div>
         <footer className="border-t border-gray-200 my-10 py-5 text-gray-500">
-          <div className="container px-2 max-w-2xl mx-auto">
+          <div className="text-black container px-2 max-w-2xl mx-auto">
             MIT.
           </div>
         </footer>
@@ -201,7 +292,23 @@ const CDN = () => {
 };
 
 export const handleCDN = (request: Request) => {
-  return jsx(<CDN />, { status: 200 });
+  const urlShit = "";
+  let urlShitChange = "";
+  const getValueQ = getQueryStringParam(request.url, "url");
+  if (getValueQ) {
+    const MATCH =
+      /[A-Za-z]+:\/\/([A-Za-z0-9\-_]+)(\.[A-Za-z0-9\-_:%&;\?\#\/.=@]+)/;
+    const siteFound = MATCH.exec(getValueQ);
+    if (siteFound && siteFound[1].toLowerCase() == "deno") {
+      urlShitChange = "https://cdn.vfiles.no" + siteFound[2].slice(5);
+    } else if (siteFound && siteFound[1].toLowerCase() == "github") {
+      urlShitChange = "https://cdn.vfiles.no" + siteFound[2].slice(4);
+    }
+  }
+
+  return jsx(<CDN urlShit={urlShit} urlShitChange={urlShitChange} />, {
+    status: 200,
+  });
 };
 
 export const NotFound = () => (
